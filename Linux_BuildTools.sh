@@ -1,22 +1,26 @@
+#!/bin/sh
 #Simple Spigot BuildTools Script
-#By krusic22
+#By Kristjan Krusic aka. krusic22
 ###
 #Set your build directory here.
+#Set your version here!
+#More information about versions here:
+#https://www.spigotmc.org/wiki/buildtools/#versions
+VERSION=latest
 cd /my/build/path
 ###
 echo "Removing old .jar's!"
-rm -rf spigot-*
-rm -rf craftbukkit-*
-rm -rf BuildTools.jar
-###
+rm spigot-*
+rm craftbukkit-*
+rm BuildTools.jar
 echo "Removing old BuildTools.log file!"
-rm -r BuildTools.log.txt
+rm BuildTools.log.txt
 ###
 echo "Getting latest BuildTools.jar!"
 wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
 ###
 echo "Running BuildTools.jar!"
-java -jar BuildTools.jar
+java -jar BuildTools.jar --rev $VERSION
 #Automatically assuming the build finished successful.
 #Note: Adding a fail detection is possible.
 echo "Build finished!"
