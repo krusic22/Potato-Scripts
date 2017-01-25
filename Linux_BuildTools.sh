@@ -7,15 +7,15 @@
 #More information about versions here:
 #https://www.spigotmc.org/wiki/buildtools/#versions
 VERSION=latest
-PATH=/my/build/path
-cd $path
+PATHTODIR=/my/build/dir
+cd $PATHTODIR
 ###
 echo "Removing old .jar's!"
-rm $path/spigot-*
-rm $path/craftbukkit-*
-rm $path/BuildTools.jar
+rm $PATHTODIR/spigot-*
+rm $PATHTODIR/craftbukkit-*
+rm $PATHTODIR/BuildTools.jar
 echo "Removing old BuildTools.log file!"
-rm $path/BuildTools.log.txt
+rm $PATHTODIR/BuildTools.log.txt
 ###
 echo "Getting latest BuildTools.jar!"
 wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
