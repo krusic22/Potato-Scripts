@@ -1,4 +1,6 @@
 #!/bin/bash
+#By Kristjan Krusic aka. krusic22
+###Don't forget to adjust the variables to your own needs!
 #This script needs megatools installed.
 EMAIL=
 PASSWORD=
