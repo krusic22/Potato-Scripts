@@ -10,7 +10,7 @@ REMOTEPATH=/Root/something
 REMOTEBACKUPNAME=AyyLMAO
 LOCALBACKUPNAME=backup
 #
-TIME=$(date +"%m_%d_%Y")
+TIME=$(date +"%d_%m_%Y")
 #
 tar -zcvf $LOCALBACKUPNAME-$TIME.tar.gz $FULLPATHTOBACKUPDIRECTORY
 megaput --path $REMOTEPATH/$REMOTEBACKUPNAME-$TIME.tar.gz  $LOCALBACKUPNAME-$TIME.tar.gz --username $EMAIL --password $PASSWORD
