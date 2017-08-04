@@ -15,7 +15,7 @@ PARMS="
 -XX:+UseG1GC
 -XX:+UnlockExperimentalVMOptions
 -XX:+AggressiveOpts"
-#Set ParallelGCThreads same as Logical CPU cores MAX 8 and ConcGCThreads to one fourth of that.
+#Set ParallelGCThreads same as Logical CPU cores MAX 8 and ConcGCThreads to one fourth of that (but don't go under 1).
 THREADS="
 -XX:ParallelGCThreads=8
 -XX:ConcGCThreads=2"
