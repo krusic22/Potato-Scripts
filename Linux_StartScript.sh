@@ -30,7 +30,7 @@ GONE="-XX:MaxGCPauseMillis=75
 "
 #Experimental options... Use at your own risk
 if ("$EXP" = true ) then
-PARMS = "-d64 -server -XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=4M -XX:+UseLargePages $PARMS"
+PARMS="-d64 -server -XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=4M -XX:+UseLargePages $PARMS"
 fi
 
 ### Auto Jar Updater. It works but it's not the best.
@@ -41,7 +41,7 @@ fi
 while true
 do
 java -Xms$STARTRAM -Xmx$MAXRAM $PARMS $THREADS $GONE -jar $JARNAME
-echo "Server will restart in 3s!"
+echo "Server will restart in:"
 echo "3"
 sleep 1
 echo "2"
