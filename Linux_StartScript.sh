@@ -20,7 +20,8 @@ THREADS="
 -XX:ParallelGCThreads=8
 -XX:ConcGCThreads=2"
 #G1 optimizations...
-GONE="-XX:MaxGCPauseMillis=75
+GONE="
+-XX:MaxGCPauseMillis=75
 -XX:TargetSurvivorRatio=90
 -XX:G1NewSizePercent=50
 -XX:G1MaxNewSizePercent=80
@@ -30,7 +31,7 @@ GONE="-XX:MaxGCPauseMillis=75
 "
 #Experimental options... Use at your own risk
 if ("$EXP" = true ) then
-PARMS="-d64 -server -XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=4M -XX:+UseLargePages $PARMS"
+PARMS="-d64 -server -XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=2M -XX:+UseLargePages $PARMS"
 fi
 
 ### Auto Jar Updater. It works but it's not the best.
