@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #By Kristjan Krusic aka. krusic22
 ###Don't forget to adjust the variables to your own needs!
 ###We only support Java 8!
@@ -6,8 +6,8 @@
 #Note: 1G = 1024M
 STARTRAM=128M           #USE VALUES IN M! Setting this the same value as MAXRAM can help sometimes...
 MAXRAM=1024M            #USE VALUES IN M!
-JARNAME=spigot.jar        #Spigoterino.Jar
-EXP=false                        #Enable experimental stuff... It can cause problems just so you know 
+JARNAME=spigot.jar      #Spigoterino.Jar
+EXP=false               #Enable experimental stuff... It can cause problems just so you know 
 #Normal Parameters
 PARMS="
 -XX:+AlwaysPreTouch
