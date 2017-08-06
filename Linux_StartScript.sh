@@ -10,6 +10,7 @@ JARNAME=spigot.jar      #Spigoterino.Jar
 EXP=false               #Enable experimental stuff... It can cause problems just so you know 
 #Normal Parameters
 PARMS="
+-server
 -XX:+AlwaysPreTouch
 -XX:+DisableExplicitGC
 -XX:+UseG1GC
@@ -31,7 +32,7 @@ GONE="
 "
 #Experimental options... Use at your own risk
 if ("$EXP" = true ) then
-PARMS="-d64 -server -XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=2M -XX:+UseLargePages $PARMS"
+PARMS="-d64 -XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=2M -XX:+UseLargePages $PARMS"
 fi
 
 ### Auto Jar Updater. It works but it's not the best.
