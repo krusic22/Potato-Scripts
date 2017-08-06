@@ -8,6 +8,9 @@
 STARTRAM=128M           #USE VALUES IN M! Setting this the same value as MAXRAM can help sometimes...
 MAXRAM=1024M            #USE VALUES IN M!
 JARNAME=spigot.jar      #Spigoterino.Jar
+IS64=true               #Disable this if you don't have 64 bit Java installed
+EXP=false               #Enable experimental stuff... It can cause problems just so you know
+LP=false                #Enable only if you have Large/Huge Pages enabled.
 #Normal Parameters
 PARMS="
 -server
