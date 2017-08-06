@@ -8,7 +8,6 @@
 STARTRAM=128M           #USE VALUES IN M! Setting this the same value as MAXRAM can help sometimes...
 MAXRAM=1024M            #USE VALUES IN M!
 JARNAME=spigot.jar      #Spigoterino.Jar
-EXP=false               #Enable experimental stuff... It can cause problems just so you know 
 #Normal Parameters
 PARMS="
 -server
@@ -20,7 +19,7 @@ PARMS="
 -XX:+UseGCOverheadLimit
 -XX:+OptimizeStringConcat
 -XX:+UseFastAccessorMethods"
-#Set ParallelGCThreads same as Logical CPU cores MAX 8 and ConcGCThreads to one fourth of that (but don't go under 1).
+#Set ParallelGCThreads same as Logical CPU cores and ConcGCThreads to one fourth of that (but don't go under 1).
 THREADS="
 -XX:ParallelGCThreads=8
 -XX:ConcGCThreads=2"
@@ -35,7 +34,15 @@ GONE="
 -XX:G1HeapWastePercent=8"
 #Experimental options... Use at your own risk
 if ("$EXP" = true ) then
-PARMS="-d64 -XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=2M -XX:+UseLargePages $PARMS"
+echo "You have enabled Experimental Options! Use at your own risk!"
+fi
+#Large Pages config
+if ("$LP" = true ) then
+PARMS="-XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=2M -XX:+UseLargePages $PARMS"
+fi
+#64Bit Java Toggle
+if ("$IS64" = true ) then
+PARMS="-d64 $PARMS"
 fi
 
 ### Auto Jar Updater. It works but it's not the best.
