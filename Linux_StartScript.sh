@@ -21,11 +21,10 @@ PARMS="
 -XX:+AggressiveOpts
 -XX:+UseGCOverheadLimit
 -XX:+OptimizeStringConcat
--XX:+UseFastAccessorMethods"
-#Set ParallelGCThreads same as Logical CPU cores and ConcGCThreads to one fourth of that (but don't go under 1).
-THREADS="
--XX:ParallelGCThreads=8
--XX:ConcGCThreads=2"
+-XX:+UseFastAccessorMethods
+-XX:-UseParallelGC
+-XX:-UseParallelOldGC
+-XX:+AlwaysActAsServerClassMachine"
 #G1 optimizations...
 GONE="
 -XX:MaxGCPauseMillis=75
@@ -36,15 +35,16 @@ GONE="
 -XX:G1MixedGCLiveThresholdPercent=50
 -XX:G1HeapWastePercent=8"
 #Experimental options... Use at your own risk
-if ("$EXP" = true ) then
+if ( "$EXP" = true ) then
 echo "You have enabled Experimental Options! Use at your own risk!"
+PARMS="-XX:+ExitOnOutOfMemoryError -XX:+UseXMMForArrayCopy -XX:+UseXmmI2D -XX:+UseXmmI2F -XX:+UseNewLongLShift -XX:+UseFastEmptyMethods $PARMS"
 fi
 #Large Pages config
-if ("$LP" = true ) then
+if ( "$LP" = true ) then
 PARMS="-XX:+UseLargePagesInMetaspace -XX:LargePageSizeInBytes=2M -XX:+UseLargePages $PARMS"
 fi
 #64Bit Java Toggle
-if ("$IS64" = true ) then
+if ( "$IS64" = true ) then
 PARMS="-d64 $PARMS"
 fi
 
@@ -55,7 +55,7 @@ fi
 ### You can stop the script by pressing CTRL+C multiple times.
 while true
 do
-java -Xms$STARTRAM -Xmx$MAXRAM $PARMS $THREADS $GONE -jar $JARNAME
+java -Xms$STARTRAM -Xmx$MAXRAM $PARMS $GONE -jar $JARNAME
 echo "Server will restart in:"
 echo "3"
 sleep 1
