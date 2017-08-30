@@ -15,7 +15,6 @@ LP=false                #Enable only if you have Large/Huge Pages enabled.
 PARMS="
 -server
 -XX:+AlwaysPreTouch
--XX:+DisableExplicitGC
 -XX:+UnlockExperimentalVMOptions
 -XX:+AggressiveOpts
 -XX:+UseGCOverheadLimit
@@ -46,7 +45,7 @@ PARMS="-d64 $PARMS"
 fi
 #G1 Is only usefull when you have more then 4GB of ram...
 if [ "$MAXRAM" -ge '4096' ]; then
-PARMS="-XX:-UseParallelGC -XX:-UseParallelOldGC -XX:+UseG1GC $PARMS"
+PARMS="-XX:+DisableExplicitGC -XX:-UseParallelGC -XX:-UseParallelOldGC -XX:+UseG1GC $PARMS $GONE"
 fi
 
 ### Auto Jar Updater. It works but it's not the best.
@@ -61,7 +60,7 @@ wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME
 while true
 do
 UpdateJar
-java -Xms$STARTRAM\M -Xmx$MAXRAM\M $PARMS $GONE -jar $JARNAME
+java -Xms$STARTRAM\M -Xmx$MAXRAM\M $PARMS -jar $JARNAME
 echo "Server will restart in:"
 echo "3"
 sleep 1
