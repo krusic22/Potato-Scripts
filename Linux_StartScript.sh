@@ -48,9 +48,6 @@ fi
 if [ "$MAXRAM" -ge '4096' ]; then
 PARMS="-XX:-UseParallelGC -XX:-UseParallelOldGC -XX:+UseG1GC $PARMS"
 fi
-#I like cleaning my strings
-PARMS=${PARMS//$'\n'/};
-GONE=${GONE//$'\n'/};
 
 ### Auto Jar Updater. It works but it's not the best.
 JARLINK=https://someawesomelink.jar
