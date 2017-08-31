@@ -59,7 +59,7 @@ wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME
 #Move the "UpdateJar" to where you like
 while true
 do
-UpdateJar
+#UpdateJar
 java -Xms$STARTRAM\M -Xmx$MAXRAM\M $PARMS -jar $JARNAME
 echo "Server will restart in:"
 echo "3"
