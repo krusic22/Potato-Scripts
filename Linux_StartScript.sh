@@ -20,16 +20,20 @@ PARMS="
 -XX:+UseGCOverheadLimit
 -XX:+OptimizeStringConcat
 -XX:+UseFastAccessorMethods
--XX:+AlwaysActAsServerClassMachine"
+-XX:MaxHeapFreeRatio=80
+-XX:MinHeapFreeRatio=40"
 #G1 optimizations...
 GONE="
--XX:MaxGCPauseMillis=75
--XX:TargetSurvivorRatio=90
--XX:G1NewSizePercent=50
--XX:G1MaxNewSizePercent=80
+-XX:MaxGCPauseMillis=150
+-XX:TargetSurvivorRatio=50
+-XX:G1NewSizePercent=5
+-XX:G1MaxNewSizePercent=60
 -XX:InitiatingHeapOccupancyPercent=10
--XX:G1MixedGCLiveThresholdPercent=50
--XX:G1HeapWastePercent=8"
+-XX:G1MixedGCLiveThresholdPercent=45
+-XX:G1HeapWastePercent=5
+-XX:MinHeapFreeRatio=40
+-XX:GCTimeRatio=12
+-XX:GCTimeLimit=98"
 #Experimental options... Use at your own risk
 if [ "$EXP" = true ]; then
 echo "You have enabled Experimental Options! Use at your own risk!"
