@@ -9,9 +9,9 @@ STARTRAM=128            #USE VALUES IN M! Sometimes setting this to the same val
 MAXRAM=1024             #USE VALUES IN M!
 JARNAME=paper.jar       #paper.jar
 ###Only use one garbage collector!
-GONE=true               #Use G1 GC.
+GONE=false               #Use G1 GC.
 SHEN=false              #Use ShenandoahGC.
-ZGC=false               #The Z Garbage Collector
+ZGC=true               #The Z Garbage Collector
 ###
 #Experimental stuff. Good luck.
 EXP=false               #Enable experimental stuff... It might cause unexpected problems but I haven't noticed any yet.
@@ -36,7 +36,7 @@ PARMS="
 -XX:MinHeapFreeRatio=40"
 #G1 optimizations...
 GONEP="
--XX:MaxGCPauseMillis=150
+-XX:MaxGCPauseMillis=100
 -XX:TargetSurvivorRatio=50
 -XX:G1NewSizePercent=5
 -XX:G1MaxNewSizePercent=60
@@ -61,7 +61,6 @@ SHENP="
 -XX:ShenandoahRegionSamplingRate=40
 -XX:ShenandoahParallelSafepointThreads=4
 -XX:-ShenandoahOptimizeInstanceFinals
--XX:-ShenandoahOptimizeStableFinals
 -XX:+ShenandoahOptimizeStaticFinals
 "
 #Experimental options... Use at your own risk!
