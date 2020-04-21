@@ -9,9 +9,9 @@ STARTRAM=128            #USE VALUES IN M! Sometimes setting this to the same val
 MAXRAM=1024             #USE VALUES IN M!
 JARNAME=paper.jar       #paper.jar
 ###Only use one garbage collector!
-GONE=false               #Use G1 GC.
-SHEN=false              #Use ShenandoahGC.
-ZGC=true               #The Z Garbage Collector
+GONE=true               #Use G1 GC. Flags from: https://aikar.co/2018/07/02/tuning-the-jvm-g1gc-garbage-collector-flags-for-minecraft/
+SHEN=false              #Use ShenandoahGC. Untested for now.
+ZGC=false               #The Z Garbage Collector. Please read: https://krusic22.com/2020/03/25/higher-performance-crafting-using-jdk11-and-zgc/
 ###
 #Experimental stuff. Good luck.
 EXP=false               #Enable experimental stuff... It might cause unexpected problems but I haven't noticed any yet.
@@ -32,20 +32,25 @@ PARMS="
 -XX:+UnlockExperimentalVMOptions
 -XX:+UnlockDiagnosticVMOptions
 -XX:+UseGCOverheadLimit
--XX:MaxHeapFreeRatio=80
--XX:MinHeapFreeRatio=40"
+-XX:+ParallelRefProcEnabled
+-XX:-OmitStackTraceInFastThrow
+-XX:+ShowCodeDetailsInExceptionMessages
+"
 #G1 optimizations...
 GONEP="
--XX:MaxGCPauseMillis=100
--XX:TargetSurvivorRatio=50
--XX:G1NewSizePercent=5
--XX:G1MaxNewSizePercent=60
--XX:InitiatingHeapOccupancyPercent=10
--XX:G1MixedGCLiveThresholdPercent=45
+-XX:MaxGCPauseMillis=200
+-XX:G1NewSizePercent=30
+-XX:G1MaxNewSizePercent=40
+-XX:G1HeapRegionSize=8M
+-XX:G1ReservePercent=20
 -XX:G1HeapWastePercent=5
--XX:MinHeapFreeRatio=40
--XX:GCTimeRatio=12
--XX:GCTimeLimit=98"
+-XX:G1MixedGCCountTarget=8
+-XX:InitiatingHeapOccupancyPercent=15
+-XX:G1MixedGCLiveThresholdPercent=90
+-XX:G1RSetUpdatingPauseTimePercent=5
+-XX:SurvivorRatio=32
+-XX:MaxTenuringThreshold=1
+"
 #Shenandoah options that might be worth looking into, some of the options only got added in JDK12+, currently set to default values from AdoptJDK13.
 SHENP="
 -XX:ShenandoahAllocSpikeFactor=5
@@ -60,8 +65,18 @@ SHENP="
 -XX:-ShenandoahRegionSampling
 -XX:ShenandoahRegionSamplingRate=40
 -XX:ShenandoahParallelSafepointThreads=4
--XX:-ShenandoahOptimizeInstanceFinals
+-XX:+ShenandoahOptimizeInstanceFinals
 -XX:+ShenandoahOptimizeStaticFinals
+"
+#ZGC options. Most of them only available in JDK13+. 
+#Copy them to the ZGCP area. 
+#-XX:-ZUncommit
+#-XX:ZUncommitDelay=5
+#-XX:SoftMaxHeapSize=4G
+#-XX:+ZCollectionInterval=5
+#-XX:ZAllocationSpikeTolerance=2.0
+ZGCP="
+
 "
 #Experimental options... Use at your own risk!
 if [ "$EXP" = true ]; then
@@ -82,7 +97,7 @@ PARMS="$PARMS -XX:+DisableExplicitGC -XX:-UseParallelGC -XX:-UseParallelOldGC -X
 fi
 #Experimental ZGC
 if [ "$ZGC" = true ]; then
-PARMS="$PARMS -XX:+DisableExplicitGC -XX:-UseParallelGC -XX:-UseParallelOldGC -XX:-UseG1GC -XX:+UseZGC"
+PARMS="$PARMS -XX:+DisableExplicitGC -XX:-UseParallelGC -XX:-UseParallelOldGC -XX:-UseG1GC -XX:+UseZGC $ZGCP"
 fi
 #Experimental X86 abomination, some of the flags may not be ARCH specific, so they could work on other platforms as well.
 if [ "$X86" = true ]; then
@@ -90,7 +105,7 @@ PARMS="$PARMS -XX:+UseCMoveUnconditionally -XX:+UseFPUForSpilling -XX:+UseNewLon
 fi
 #
 ###Auto Jar Updater. It works but it's not the best.
-JARLINK=https://papermc.io/api/v1/paper/1.15.2/latest/download
+JARLINK="https://papermc.io/api/v1/paper/1.15.2/latest/download"
 function UpdateJar {
 echo "Updating Jar..."
 wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME

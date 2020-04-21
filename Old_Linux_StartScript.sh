@@ -20,24 +20,26 @@ PARMS="
 -XX:+UseGCOverheadLimit
 -XX:+OptimizeStringConcat
 -XX:+UseFastAccessorMethods
--XX:MaxHeapFreeRatio=80
--XX:MinHeapFreeRatio=40"
-#G1 optimizations...
+-XX:+ParallelRefProcEnabled
+-XX:-OmitStackTraceInFastThrow"
+#G1 optimizations... From: https://aikar.co/2018/07/02/tuning-the-jvm-g1gc-garbage-collector-flags-for-minecraft/
 GONE="
--XX:MaxGCPauseMillis=150
--XX:TargetSurvivorRatio=50
--XX:G1NewSizePercent=5
--XX:G1MaxNewSizePercent=60
--XX:InitiatingHeapOccupancyPercent=10
--XX:G1MixedGCLiveThresholdPercent=45
+-XX:MaxGCPauseMillis=200
+-XX:G1NewSizePercent=30
+-XX:G1MaxNewSizePercent=40
+-XX:G1HeapRegionSize=8M
+-XX:G1ReservePercent=20
 -XX:G1HeapWastePercent=5
--XX:MinHeapFreeRatio=40
--XX:GCTimeRatio=12
--XX:GCTimeLimit=98"
+-XX:G1MixedGCCountTarget=8
+-XX:InitiatingHeapOccupancyPercent=15
+-XX:G1MixedGCLiveThresholdPercent=90
+-XX:G1RSetUpdatingPauseTimePercent=5
+-XX:SurvivorRatio=32
+-XX:MaxTenuringThreshold=1"
 #Experimental options... Use at your own risk
 if [ "$EXP" = true ]; then
 echo "You have enabled Experimental Options! Use at your own risk!"
-PARMS="-XX:+ExitOnOutOfMemoryError -XX:+UseXMMForArrayCopy -XX:+UseXmmI2D -XX:+UseXmmI2F -XX:+UseNewLongLShift -XX:+UseFastEmptyMethods -XX:+UseAdaptiveGCBoundary  $PARMS"
+PARMS="-XX:+ExitOnOutOfMemoryError -XX:+UseFastEmptyMethods -XX:+UseAdaptiveGCBoundary -XX:+AlwaysCompileLoopMethods -XX:+AssumeMP $PARMS"
 fi
 #Large Pages config
 if [ "$LP" = true ]; then
@@ -48,12 +50,12 @@ if [ "$IS64" = true ]; then
 PARMS="-d64 $PARMS"
 fi
 #G1 Is only usefull when you have more then 1GB of ram...
-if [ "$MAXRAM" -ge '1024' ]; then
+if [ "$MAXRAM" -ge '128' ]; then
 PARMS="-XX:+DisableExplicitGC -XX:-UseParallelGC -XX:-UseParallelOldGC -XX:+UseG1GC $PARMS $GONE"
 fi
 
 ### Auto Jar Updater. It works but it's not the best.
-JARLINK=https://papermc.io/api/v1/paper/1.15.2/latest/download
+JARLINK="https://papermc.io/api/v1/paper/1.15.2/latest/download"
 function UpdateJar {
 echo "Updating Jar..."
 wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME
