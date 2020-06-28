@@ -35,6 +35,7 @@ PARMS="
 -XX:+ParallelRefProcEnabled
 -XX:-OmitStackTraceInFastThrow
 -XX:+ShowCodeDetailsInExceptionMessages
+-XX:+UseCompressedOops
 "
 #G1 optimizations...
 GONEP="
