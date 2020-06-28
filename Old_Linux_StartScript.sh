@@ -21,7 +21,9 @@ PARMS="
 -XX:+OptimizeStringConcat
 -XX:+UseFastAccessorMethods
 -XX:+ParallelRefProcEnabled
--XX:-OmitStackTraceInFastThrow"
+-XX:-OmitStackTraceInFastThrow
+-XX:+UseCompressedOops
+"
 #G1 optimizations... From: https://aikar.co/2018/07/02/tuning-the-jvm-g1gc-garbage-collector-flags-for-minecraft/
 GONE="
 -XX:MaxGCPauseMillis=200
