@@ -8,7 +8,8 @@
 STARTRAM=128            #USE VALUES IN M! Sometimes setting this to the same value as MAXRAM can help performance.
 MAXRAM=1024             #USE VALUES IN M!
 JARNAME=paper.jar       #paper.jar
-###Only use one garbage collector!
+###
+#Only use one garbage collector!
 GONE=true               #Use G1 GC. Flags from: https://aikar.co/2018/07/02/tuning-the-jvm-g1gc-garbage-collector-flags-for-minecraft/
 SHEN=false              #Use ShenandoahGC. Untested for now.
 ZGC=false               #The Z Garbage Collector. Please read: https://krusic22.com/2020/03/25/higher-performance-crafting-using-jdk11-and-zgc/
@@ -17,7 +18,10 @@ ZGC=false               #The Z Garbage Collector. Please read: https://krusic22.
 EXP=false               #Enable experimental stuff... It might cause unexpected problems but I haven't noticed any yet.
 LP=false                #Enable only if you have Large/Huge Pages enabled, transparent pages are recommended for regular users.
 X86=false               #Flags that should only work on X86.
-#
+###
+#Jar parameters like --nogui or --forceUpgrade, you can list all options by setting this to --help.
+AFTERJAR="--nogui"
+###
 #Unused Parameters, you might want to use some of them depending on your configuration, copy the parameters under Normal Parameters,
 #since IgnoreUnrecognizedVMOptions is set, unknown / invalid options will be ignored instead of stopping the JVM.
 #-XX:ActiveProcessorCount=4 #This should restrict the use of CPU cores, although this is more of a suggestion than a constraint.
@@ -106,7 +110,7 @@ PARMS="$PARMS -XX:+UseCMoveUnconditionally -XX:+UseFPUForSpilling -XX:+UseNewLon
 fi
 #
 ###Auto Jar Updater. It works but it's not the best.
-JARLINK="https://papermc.io/api/v1/paper/1.15.2/latest/download"
+JARLINK="https://papermc.io/api/v1/paper/1.16.1/latest/download"
 function UpdateJar {
 echo "Updating Jar..."
 wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME
@@ -116,7 +120,7 @@ wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME
 while true
 do
 #UpdateJar
-java -Xms$STARTRAM\M -Xmx$MAXRAM\M $PARMS -jar $JARNAME
+java -Xms$STARTRAM\M -Xmx$MAXRAM\M $PARMS -jar $JARNAME $AFTERJAR
 echo "Server will restart in:"
 echo "3"
 sleep 1

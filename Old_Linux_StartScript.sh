@@ -11,6 +11,8 @@ JARNAME=paper.jar       #paper.Jar
 IS64=true               #Disable this if you don't have 64 bit Java installed
 EXP=false               #Enable experimental stuff... It can cause problems just so you know
 LP=false                #Enable only if you have Large/Huge Pages enabled.
+#Jar parameters like --nogui, you can list all options by setting this to --help.
+AFTERJAR="--nogui"
 #Normal Parameters
 PARMS="
 -server
@@ -37,7 +39,8 @@ GONE="
 -XX:G1MixedGCLiveThresholdPercent=90
 -XX:G1RSetUpdatingPauseTimePercent=5
 -XX:SurvivorRatio=32
--XX:MaxTenuringThreshold=1"
+-XX:MaxTenuringThreshold=1
+"
 #Experimental options... Use at your own risk
 if [ "$EXP" = true ]; then
 echo "You have enabled Experimental Options! Use at your own risk!"
@@ -57,7 +60,7 @@ PARMS="-XX:+DisableExplicitGC -XX:-UseParallelGC -XX:-UseParallelOldGC -XX:+UseG
 fi
 
 ### Auto Jar Updater. It works but it's not the best.
-JARLINK="https://papermc.io/api/v1/paper/1.15.2/latest/download"
+JARLINK="https://papermc.io/api/v1/paper/1.16.1/latest/download"
 function UpdateJar {
 echo "Updating Jar..."
 wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME
@@ -68,7 +71,7 @@ wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME
 while true
 do
 #UpdateJar
-java -Xms$STARTRAM\M -Xmx$MAXRAM\M $PARMS -jar $JARNAME
+java -Xms$STARTRAM\M -Xmx$MAXRAM\M $PARMS -jar $JARNAME $AFTERJAR
 echo "Server will restart in:"
 echo "3"
 sleep 1
