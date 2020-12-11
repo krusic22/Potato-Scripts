@@ -7,7 +7,23 @@
 #Note: 1G = 1024M
 STARTRAM=128            #USE VALUES IN M! Sometimes setting this to the same value as MAXRAM can help performance.
 MAXRAM=1024             #USE VALUES IN M!
-JARNAME=paper.jar       #paper.jar
+JARNAME=paper.jar       #Jar name, quite self-explanatory.
+###
+#Auto updater toggle.
+UPDATER="true"
+#Default is new, using the PaperMC Donwnload API, use old if you want to download from a link.
+UPDATERVERSION="new"
+#Update program. Current options are curl and wget.
+UPDATEPROGRAM="curl"
+###
+#PaperMC API Settings. More info: https://papermc.io/api/docs/swagger-ui/index.html?configUrl=/api/openapi/swagger-config
+PROJECT="paper"
+VERSION="1.16.4"
+#Note: latest is not actually a part of the API, so the script gets the latest build ID using the API first.
+BUILD="latest"
+###
+#OLD updater version download link.
+JARLINK="https://papermc.io/api/v1/paper/1.16.4/latest/download"
 ###
 #Only use one garbage collector!
 GONE=true               #Use G1 GC. Flags from: https://aikar.co/2018/07/02/tuning-the-jvm-g1gc-garbage-collector-flags-for-minecraft/
@@ -40,6 +56,7 @@ PARMS="
 -XX:-OmitStackTraceInFastThrow
 -XX:+ShowCodeDetailsInExceptionMessages
 -XX:+UseCompressedOops
+-XX:+PerfDisableSharedMem
 "
 #G1 optimizations...
 GONEP="
@@ -49,7 +66,7 @@ GONEP="
 -XX:G1HeapRegionSize=8M
 -XX:G1ReservePercent=20
 -XX:G1HeapWastePercent=5
--XX:G1MixedGCCountTarget=8
+-XX:G1MixedGCCountTarget=4
 -XX:InitiatingHeapOccupancyPercent=15
 -XX:G1MixedGCLiveThresholdPercent=90
 -XX:G1RSetUpdatingPauseTimePercent=5
@@ -73,8 +90,8 @@ SHENP="
 -XX:+ShenandoahOptimizeInstanceFinals
 -XX:+ShenandoahOptimizeStaticFinals
 "
-#ZGC options. Most of them only available in JDK13+. 
-#Copy them to the ZGCP area. 
+#ZGC options. Most of them only available in JDK13+.
+#Copy them to the ZGCP area.
 #-XX:-ZUncommit
 #-XX:ZUncommitDelay=5
 #-XX:SoftMaxHeapSize=4G
@@ -108,18 +125,46 @@ fi
 if [ "$X86" = true ]; then
 PARMS="$PARMS -XX:+UseCMoveUnconditionally -XX:+UseFPUForSpilling -XX:+UseNewLongLShift -XX:+UseVectorCmov -XX:+UseXMMForArrayCopy -XX:+UseXmmI2D -XX:+UseXmmI2F -XX:+UseXmmLoadAndClearUpper -XX:+UseXmmRegToRegMoveAll"
 fi
-#
-###Auto Jar Updater. It works but it's not the best.
-JARLINK="https://papermc.io/api/v1/paper/1.16.1/latest/download"
-function UpdateJar {
-echo "Updating Jar..."
-wget $JARLINK -O $JARNAME 2>/dev/null || curl $JARLINK > $JARNAME
+###
+#Updater. This time actually formatted for readability.
+function Updater {
+	if [ "$UPDATER" = true ]; then
+	echo "Updating Jar..."
+	    #New PaperMC API updater
+		if [ "$UPDATERVERSION" = "new" ]; then
+			if [ "$BUILD" = "latest" ]; then
+				if [ $UPDATEPROGRAM = "curl" ]; then
+					BUILD=$(curl -s https://papermc.io/api/v2/projects/paper/versions/1.16.4 | grep -E -o '[0-9]+' | tail -1)
+				fi
+				if [ $UPDATEPROGRAM = "wget" ]; then
+					BUILD=$(wget -q https://papermc.io/api/v2/projects/paper/versions/1.16.4 -O - | grep -E -o '[0-9]+' | tail -1)
+				fi
+			fi
+			JARLINK="https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD/downloads/$PROJECT-$VERSION-$BUILD.jar"
+			if [ $UPDATEPROGRAM = "curl" ]; then
+				curl -s "$JARLINK" > "$JARNAME"
+			fi
+			if [ $UPDATEPROGRAM = "wget" ]; then
+				wget "$JARLINK" -O "$JARNAME" 2>/dev/null
+			fi
+		fi
+		#Old updater
+		if [ "$UPDATERVERSION" = "old" ]; then
+			if [ $UPDATEPROGRAM = "curl" ]; then
+				curl -s "$JARLINK" > "$JARNAME"
+			fi
+			if [ $UPDATEPROGRAM = "wget" ]; then
+				wget "$JARLINK" -O "$JARNAME" 2>/dev/null
+			fi
+		fi
+	fi
 }
-###You can stop this script by pressing CTRL+C multiple times.
-#Move the "UpdateJar" to where you want it.
+###
+#You can stop this script by pressing CTRL+C multiple times.
 while true
 do
-#UpdateJar
+Updater
+echo "Starting!"
 java -Xms$STARTRAM\M -Xmx$MAXRAM\M $PARMS -jar $JARNAME $AFTERJAR
 echo "Server will restart in:"
 echo "3"
@@ -128,5 +173,4 @@ echo "2"
 sleep 1
 echo "1"
 sleep 1
-echo "Starting!"
 done
