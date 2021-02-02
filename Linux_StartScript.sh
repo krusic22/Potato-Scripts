@@ -11,6 +11,9 @@ JARNAME=paper.jar       #Jar name, quite self-explanatory.
 ###
 #Auto updater toggle.
 UPDATER="true"
+#After how many restarts should the script attempt to update the jar.
+#Note, the jar will always be updated on first startup!
+UPDATEAFTER="1"
 #Default is new, using the PaperMC Donwnload API, use old if you want to download from a link.
 UPDATERVERSION="new"
 #Update program. Current options are curl and wget.
@@ -127,37 +130,41 @@ PARMS="$PARMS -XX:+UseCMoveUnconditionally -XX:+UseFPUForSpilling -XX:+UseNewLon
 fi
 ###
 #Updater. This time actually formatted for readability.
+RUN=0
 function Updater {
-	if [ "$UPDATER" = true ]; then
-	echo "Updating Jar..."
-	    #New PaperMC API updater
-		if [ "$UPDATERVERSION" = "new" ]; then
-			if [ "$BUILD" = "latest" ]; then
-				if [ $UPDATEPROGRAM = "curl" ]; then
-					BUILD=$(curl -s https://papermc.io/api/v2/projects/paper/versions/$VERSION | grep -E -o '[0-9]+' | tail -1)
-				fi
-				if [ $UPDATEPROGRAM = "wget" ]; then
-					BUILD=$(wget -q https://papermc.io/api/v2/projects/paper/versions/$VERSION -O - | grep -E -o '[0-9]+' | tail -1)
-				fi
-			fi
-			JARLINK="https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD/downloads/$PROJECT-$VERSION-$BUILD.jar"
-			if [ $UPDATEPROGRAM = "curl" ]; then
-				curl -s "$JARLINK" > "$JARNAME"
-			fi
-			if [ $UPDATEPROGRAM = "wget" ]; then
-				wget "$JARLINK" -O "$JARNAME" 2>/dev/null
-			fi
-		fi
-		#Old updater
-		if [ "$UPDATERVERSION" = "old" ]; then
-			if [ $UPDATEPROGRAM = "curl" ]; then
-				curl -s "$JARLINK" > "$JARNAME"
-			fi
-			if [ $UPDATEPROGRAM = "wget" ]; then
-				wget "$JARLINK" -O "$JARNAME" 2>/dev/null
-			fi
-		fi
-	fi
+    if [ "$UPDATER" = true ]; then
+        if [ "$(( "$RUN" % "$UPDATEAFTER"))" = 0 ] || [ "$RUN" = 0 ]; then
+            echo "Updating Jar..."
+            #New PaperMC API updater
+            if [ "$UPDATERVERSION" = "new" ]; then
+                if [ "$BUILD" = "latest" ]; then
+                    if [ $UPDATEPROGRAM = "curl" ]; then
+                        BUILD=$(curl -s https://papermc.io/api/v2/projects/paper/versions/$VERSION | grep -E -o '[0-9]+' | tail -1)
+                    fi
+                    if [ $UPDATEPROGRAM = "wget" ]; then
+                        BUILD=$(wget -q https://papermc.io/api/v2/projects/paper/versions/$VERSION -O - | grep -E -o '[0-9]+' | tail -1)
+                    fi
+                fi
+                JARLINK="https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD/downloads/$PROJECT-$VERSION-$BUILD.jar"
+                if [ $UPDATEPROGRAM = "curl" ]; then
+                    curl -s "$JARLINK" > "$JARNAME"
+                fi
+                if [ $UPDATEPROGRAM = "wget" ]; then
+                    wget "$JARLINK" -O "$JARNAME" 2>/dev/null
+                fi
+            fi
+            #Old updater
+            if [ "$UPDATERVERSION" = "old" ]; then
+                if [ $UPDATEPROGRAM = "curl" ]; then
+                    curl -s "$JARLINK" > "$JARNAME"
+                fi
+                if [ $UPDATEPROGRAM = "wget" ]; then
+                    wget "$JARLINK" -O "$JARNAME" 2>/dev/null
+                fi
+            fi
+        fi
+    fi
+RUN=$((RUN+1))
 }
 ###
 #You can stop this script by pressing CTRL+C multiple times.
