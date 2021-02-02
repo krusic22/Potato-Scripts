@@ -18,12 +18,12 @@ UPDATEPROGRAM="curl"
 ###
 #PaperMC API Settings. More info: https://papermc.io/api/docs/swagger-ui/index.html?configUrl=/api/openapi/swagger-config
 PROJECT="paper"
-VERSION="1.16.4"
+VERSION="1.16.5"
 #Note: latest is not actually a part of the API, so the script gets the latest build ID using the API first.
 BUILD="latest"
 ###
 #OLD updater version download link.
-JARLINK="https://papermc.io/api/v1/paper/1.16.4/latest/download"
+JARLINK="https://papermc.io/api/v1/paper/1.16.5/latest/download"
 ###
 #Only use one garbage collector!
 GONE=true               #Use G1 GC. Flags from: https://aikar.co/2018/07/02/tuning-the-jvm-g1gc-garbage-collector-flags-for-minecraft/
@@ -134,10 +134,10 @@ function Updater {
 		if [ "$UPDATERVERSION" = "new" ]; then
 			if [ "$BUILD" = "latest" ]; then
 				if [ $UPDATEPROGRAM = "curl" ]; then
-					BUILD=$(curl -s https://papermc.io/api/v2/projects/paper/versions/1.16.4 | grep -E -o '[0-9]+' | tail -1)
+					BUILD=$(curl -s https://papermc.io/api/v2/projects/paper/versions/$VERSION | grep -E -o '[0-9]+' | tail -1)
 				fi
 				if [ $UPDATEPROGRAM = "wget" ]; then
-					BUILD=$(wget -q https://papermc.io/api/v2/projects/paper/versions/1.16.4 -O - | grep -E -o '[0-9]+' | tail -1)
+					BUILD=$(wget -q https://papermc.io/api/v2/projects/paper/versions/$VERSION -O - | grep -E -o '[0-9]+' | tail -1)
 				fi
 			fi
 			JARLINK="https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD/downloads/$PROJECT-$VERSION-$BUILD.jar"
