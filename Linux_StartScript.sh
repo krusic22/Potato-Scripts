@@ -139,10 +139,10 @@ function Updater {
             if [ "$UPDATERVERSION" = "new" ]; then
                 if [ "$BUILD" = "latest" ]; then
                     if [ $UPDATEPROGRAM = "curl" ]; then
-                        BUILD=$(curl -s https://papermc.io/api/v2/projects/paper/versions/$VERSION | grep -E -o '[0-9]+' | tail -1)
+                        BUILD=$(curl -s https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION | grep -E -o '[0-9]+' | tail -1)
                     fi
                     if [ $UPDATEPROGRAM = "wget" ]; then
-                        BUILD=$(wget -q https://papermc.io/api/v2/projects/paper/versions/$VERSION -O - | grep -E -o '[0-9]+' | tail -1)
+                        BUILD=$(wget -q https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION -O - | grep -E -o '[0-9]+' | tail -1)
                     fi
                 fi
                 JARLINK="https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD/downloads/$PROJECT-$VERSION-$BUILD.jar"
