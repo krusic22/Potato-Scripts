@@ -140,13 +140,24 @@ function Updater {
                         BUILD=$(wget -q https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION -O - | grep -E -o '[0-9]+' | tail -1)
                     fi
                 fi
-                JARLINK="https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD/downloads/$PROJECT-$VERSION-$BUILD.jar"
-                if [ $UPDATEPROGRAM = "curl" ]; then
-                    curl -s "$JARLINK" > "$JARNAME"
+				echo "Checking if jar is up to date..."
+				EXISTINGHASH=$(sha256sum $JARNAME 2>/dev/null)
+				if [ $UPDATEPROGRAM = "curl" ]; then
+                        NEWHASH=$(curl -s https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD | grep -E -o '([a-z]|[0-9]){64}' | tail -1)
                 fi
                 if [ $UPDATEPROGRAM = "wget" ]; then
-                    wget "$JARLINK" -O "$JARNAME" 2>/dev/null
+                        NEWHASH=$(wget -q https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD -O - | grep -E -o '([a-z]|[0-9]){64}' | tail -1)
                 fi
+				if [ "${EXISTINGHASH%% *}" != "$NEWHASH" ]; then
+					echo "Downloading new jar..."
+					JARLINK="https://papermc.io/api/v2/projects/$PROJECT/versions/$VERSION/builds/$BUILD/downloads/$PROJECT-$VERSION-$BUILD.jar"
+					if [ $UPDATEPROGRAM = "curl" ]; then
+						curl -s "$JARLINK" > "$JARNAME"
+					fi
+					if [ $UPDATEPROGRAM = "wget" ]; then
+						wget "$JARLINK" -O "$JARNAME" 2>/dev/null
+					fi
+				fi
             fi
             #Old updater
             if [ "$UPDATERVERSION" = "old" ]; then
@@ -158,7 +169,8 @@ function Updater {
                 fi
             fi
         fi
-    fi
+	fi
+    
 RUN=$((RUN+1))
 }
 ###
